@@ -197,6 +197,14 @@ impl AtomBuilder {
         self.resname = ArrayString::from(res).unwrap();
         self
     }
+    pub fn atom_residue_chain(&mut self, atm: &str, res: &str, chn: char)
+        -> &mut AtomBuilder {
+        self.name    = ArrayString::from(atm).unwrap();
+        self.resname = ArrayString::from(res).unwrap();
+        self.chainid = chn as u8;
+        self
+    }
+
     pub fn occupancy(&mut self, occ: f64) -> &mut AtomBuilder {
         self.occupancy = occ;
         self
@@ -221,7 +229,6 @@ impl AtomBuilder {
         self.altloc = alt as u8;
         self
     }
-
     pub fn finalize(&self) -> Atom {
         Atom {
             record    : self.record,

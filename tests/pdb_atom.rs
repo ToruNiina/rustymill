@@ -66,6 +66,24 @@ fn write_pdb_line() {
 
 #[test]
 fn build_pdb_atom() {
+    let atom = mill::pdb::AtomBuilder::new().finalize();
+    assert_eq!(atom.record_name(),        "ATOM");
+    assert_eq!(atom.atom_number(),        1);
+    assert_eq!(atom.atom_name(),          "");
+    assert_eq!(atom.alternate_location(), ' ');
+    assert_eq!(atom.residue_name(),       "");
+    assert_eq!(atom.chain_id(),           'A');
+    assert_eq!(atom.residue_number(),     1);
+    assert_eq!(atom.insertion_code(),     ' ');
+    assert_eq!(atom.x,                    0.0);
+    assert_eq!(atom.y,                    0.0);
+    assert_eq!(atom.z,                    0.0);
+    assert_eq!(atom.occupancy(),          0.0);
+    assert_eq!(atom.temperature_factor(), 99.9);
+    assert_eq!(atom.element_symbol(),     "");
+    assert_eq!(atom.charge(),             "");
+
+
     let atom = mill::pdb::AtomBuilder::new()
                .pos(1.0, 2.0, 3.0)
                .atom_number(42)
@@ -75,6 +93,8 @@ fn build_pdb_atom() {
                .residue_name("GLY")
                .occupancy(3.14)
                .temperature_factor(2.71)
+               .element("N")
+               .charge("N")
                .finalize();
     assert_eq!(atom.record_name(),        "ATOM");
     assert_eq!(atom.atom_number(),        42);
@@ -89,6 +109,28 @@ fn build_pdb_atom() {
     assert_eq!(atom.z,                    3.0);
     assert_eq!(atom.occupancy(),          3.14);
     assert_eq!(atom.temperature_factor(), 2.71);
+    assert_eq!(atom.element_symbol(),     "N");
+    assert_eq!(atom.charge(),             "N");
+
+    let atom = mill::pdb::AtomBuilder::new()
+               .pos(1.0, 2.0, 3.0)
+               .atom_number(42)
+               .residue_number(69)
+               .atom_residue_chain("CA", "GLY", 'A')
+               .finalize();
+    assert_eq!(atom.record_name(),        "ATOM");
+    assert_eq!(atom.atom_number(),        42);
+    assert_eq!(atom.atom_name(),          "CA");
+    assert_eq!(atom.alternate_location(), ' ');
+    assert_eq!(atom.residue_name(),       "GLY");
+    assert_eq!(atom.chain_id(),           'A');
+    assert_eq!(atom.residue_number(),     69);
+    assert_eq!(atom.insertion_code(),     ' ');
+    assert_eq!(atom.x,                    1.0);
+    assert_eq!(atom.y,                    2.0);
+    assert_eq!(atom.z,                    3.0);
+    assert_eq!(atom.occupancy(),          0.00);
+    assert_eq!(atom.temperature_factor(), 99.9);
     assert_eq!(atom.element_symbol(),     "");
     assert_eq!(atom.charge(),             "");
 }
