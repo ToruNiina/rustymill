@@ -2,7 +2,8 @@ extern crate rustymill as mill;
 
 #[test]
 fn read_pdb_line() {
-    let atom = mill::pdb::Atom::from("ATOM     45  N  BARG A   3      11.281  86.699  94.383  1.00 39.29           N N");
+    let atom = mill::pdb::Atom::from(
+        "ATOM     45  N  BARG A   3      11.281  86.699  94.383  1.00 39.29           N N").unwrap();
     assert_eq!(atom.record_name(),        "ATOM");
     assert_eq!(atom.atom_number(),        45);
     assert_eq!(atom.atom_name(),          "N");
@@ -19,10 +20,35 @@ fn read_pdb_line() {
     assert_eq!(atom.element_symbol(),     "N");
     assert_eq!(atom.charge(),             "N");
 }
+#[test]
+fn fail_to_read_pdb_line() {
+    {
+        let atom = mill::pdb::Atom::from(
+            "ATOM     45  N  BARG A   3      ABCDEF  86.699  94.383  1.00 39.29           N N");
+        assert!(atom.is_err());
+    }
+
+    {
+        let atom = mill::pdb::Atom::from(
+            "ATOM     45  N  BARG A   C      11.281  86.699  94.383  1.00 39.29           N N");
+        assert!(atom.is_err());
+    }
+    {
+        let atom = mill::pdb::Atom::from(
+            "ATOM    ABC  N  BARG A   3      11.281  86.699  94.383  1.00 39.29           N N");
+        assert!(atom.is_err());
+    }
+    {
+        let atom = mill::pdb::Atom::from(
+            "ATOM     45  N  BARG A   3      11.281  86.699  94.383  1.00 39.29");
+        assert!(atom.is_err());
+    }
+}
 
 #[test]
 fn write_pdb_line() {
-    let atom = mill::pdb::Atom::from("ATOM     45  N  BARG A   3      11.281  86.699  94.383  1.00 39.29           N N");
+    let atom = mill::pdb::Atom::from(
+        "ATOM     45  N  BARG A   3      11.281  86.699  94.383  1.00 39.29           N N").unwrap();
     let line = format!("{}", atom);
     println!("{}", atom);
     assert_eq!(line, "ATOM     45  N  BARG A   3      11.281  86.699  94.383  1.00 39.29           N N");

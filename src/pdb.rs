@@ -1,5 +1,6 @@
 use arrayvec::ArrayString;
 use std::ascii::AsciiExt;
+use std::string::String;
 use std::str;
 use std::fmt;
 
@@ -60,25 +61,68 @@ impl Atom {
         }
     }
 
-    pub fn from(line: &str) -> Atom {
-        assert!(line.is_ascii());
-        Atom{
+    pub fn from(line: &str) -> Result<Atom, String> {
+        if !line.is_ascii() {
+            return Err(format!("the line is not encoded as ASCII. \n{}", line).to_owned())
+        }
+        if line.len() != 80 {
+            return Err(format!("the line does not have 80 characters. \n{}", line).to_owned())
+        }
+
+        let srl: i32 = match (&line[6..11].trim()).parse::<i32>() {
+            Ok(n)    => n,
+            Err(err) => return Err([format!("at line {}\n", line),
+                                    err.to_string()].concat()),
+        };
+        let resn: i32 = match (&line[22..26].trim()).parse::<i32>() {
+            Ok(n)    => n,
+            Err(err) => return Err([format!("at line {}\n", line),
+                                    err.to_string()].concat()),
+        };
+        let x_: f64 = match (&line[30..38].trim()).parse::<f64>() {
+            Ok(n)    => n,
+            Err(err) => return Err([format!("at line {}\n", line),
+                                    err.to_string()].concat()),
+        };
+        let y_: f64 = match (&line[38..46].trim()).parse::<f64>() {
+            Ok(n)    => n,
+            Err(err) => return Err([format!("at line {}\n", line),
+                                    err.to_string()].concat()),
+        };
+        let z_: f64 = match (&line[46..54].trim()).parse::<f64>() {
+            Ok(n)    => n,
+            Err(err) => return Err([format!("at line {}\n", line),
+                                    err.to_string()].concat()),
+        };
+        let occ: f64 = match (&line[54..60].trim()).parse::<f64>() {
+            Ok(n)    => n,
+            Err(err) => return Err([format!("at line {}\n", line),
+                                    err.to_string()].concat()),
+        };
+        let tmp: f64 = match (&line[60..66].trim()).parse::<f64>() {
+            Ok(n)    => n,
+            Err(err) => return Err([format!("at line {}\n", line),
+                                    err.to_string()].concat()),
+        };
+
+
+        Ok(Atom{
             record    : ArrayString::<[u8;6]>::from(&line[0..6].trim()).unwrap(),
-            serial    : (&line[6..11].trim()).parse::<i32>().unwrap(),
+            serial    : srl,
             name      : ArrayString::<[u8;5]>::from(&line[12..16].trim()).unwrap(),
             altloc    : line.as_bytes()[16],
             resname   : ArrayString::<[u8;3]>::from(&line[17..20].trim()).unwrap(),
             chainid   : line.as_bytes()[21],
-            resseq    : (&line[22..26].trim()).parse::<i32>().unwrap(),
+            resseq    : resn,
             icode     : line.as_bytes()[26],
-            x         : (&line[30..38].trim()).parse::<f64>().unwrap(),
-            y         : (&line[38..46].trim()).parse::<f64>().unwrap(),
-            z         : (&line[46..54].trim()).parse::<f64>().unwrap(),
-            occupancy : (&line[54..60].trim()).parse::<f64>().unwrap(),
-            tempfactor: (&line[60..66].trim()).parse::<f64>().unwrap(),
+            x         : x_,
+            y         : y_,
+            z         : z_,
+            occupancy : occ,
+            tempfactor: tmp,
             element   : ArrayString::<[u8;2]>::from(&line[76..78].trim()).unwrap(),
             charge    : ArrayString::<[u8;2]>::from(&line[78..80].trim()).unwrap()
-        }
+        })
     }
 }
 
