@@ -27,42 +27,18 @@ pub struct Atom {
 }
 
 impl Atom {
-    pub fn record_name(&self) -> &str {
-        self.record.as_str()
-    }
-    pub fn atom_number(&self) -> i32 {
-        self.serial
-    }
-    pub fn atom_name(&self) -> &str {
-        self.name.as_str()
-    }
-    pub fn alternate_location(&self) -> char {
-        self.altloc as char
-    }
-    pub fn residue_name(&self) -> &str {
-        self.resname.as_str()
-    }
-    pub fn chain_id(&self) -> char {
-        self.chainid as char
-    }
-    pub fn residue_number(&self) -> i32 {
-        self.resseq
-    }
-    pub fn insertion_code(&self) -> char {
-        self.icode as char
-    }
-    pub fn occupancy(&self) -> f64 {
-        self.occupancy
-    }
-    pub fn temperature_factor(&self) -> f64 {
-        self.tempfactor
-    }
-    pub fn element_symbol(&self) -> &str {
-        self.element.as_str()
-    }
-    pub fn charge(&self) -> &str {
-        self.charge.as_str()
-    }
+    pub fn record_name(&self)        -> &str {self.record.as_str()}
+    pub fn atom_number(&self)        -> i32  {self.serial}
+    pub fn atom_name(&self)          -> &str {self.name.as_str()}
+    pub fn alternate_location(&self) -> char {self.altloc as char}
+    pub fn residue_name(&self)       -> &str {self.resname.as_str()}
+    pub fn chain_id(&self)           -> char {self.chainid as char}
+    pub fn residue_number(&self)     -> i32  {self.resseq}
+    pub fn insertion_code(&self)     -> char {self.icode as char}
+    pub fn occupancy(&self)          -> f64  {self.occupancy}
+    pub fn temperature_factor(&self) -> f64  {self.tempfactor}
+    pub fn element_symbol(&self)     -> &str {self.element.as_str()}
+    pub fn charge(&self)             -> &str {self.charge.as_str()}
 
     pub fn new() -> Atom {
         Atom{
@@ -106,6 +82,123 @@ impl Atom {
     }
 }
 
+pub struct AtomBuilder {
+    record    : ArrayString<[u8;6]>,
+    serial    : i32,
+    name      : ArrayString<[u8;5]>,
+    altloc    : u8,
+    resname   : ArrayString<[u8;3]>,
+    chainid   : u8,
+    resseq    : i32,
+    icode     : u8,
+    pub x     : f64,
+    pub y     : f64,
+    pub z     : f64,
+    occupancy : f64,
+    tempfactor: f64,
+    element   : ArrayString<[u8;2]>,
+    charge    : ArrayString<[u8;2]>,
+}
+
+impl AtomBuilder {
+    pub fn new() -> AtomBuilder {
+        AtomBuilder{
+            record    : ArrayString::<[u8;6]>::from("ATOM").unwrap(),
+            serial    : 1,
+            name      : ArrayString::<[u8;5]>::new(),
+            altloc    : b' ',
+            resname   : ArrayString::<[u8;3]>::new(),
+            chainid   : b'A',
+            resseq    : 1,
+            icode     : b' ',
+            x         : 0.0,
+            y         : 0.0,
+            z         : 0.0,
+            occupancy : 0.0,
+            tempfactor: 99.9,
+            element   : ArrayString::<[u8;2]>::new(),
+            charge    : ArrayString::<[u8;2]>::new()
+        }
+    }
+    pub fn atom_number(&mut self, an: i32) -> &mut AtomBuilder {
+        self.serial = an;
+        self
+    }
+    pub fn residue_number(&mut self, rn: i32) -> &mut AtomBuilder {
+        self.resseq = rn;
+        self
+    }
+    pub fn chain_id(&mut self, ch: i32) -> &mut AtomBuilder {
+        self.chainid = ch as u8;
+        self
+    }
+    pub fn x(&mut self, crd: f64) -> &mut AtomBuilder {self.x = crd; self}
+    pub fn y(&mut self, crd: f64) -> &mut AtomBuilder {self.y = crd; self}
+    pub fn z(&mut self, crd: f64) -> &mut AtomBuilder {self.z = crd; self}
+    pub fn pos(&mut self, px: f64, py: f64, pz: f64) -> &mut AtomBuilder {
+        self.x = px;
+        self.y = py;
+        self.z = pz;
+        self
+    }
+    pub fn record_name(&mut self, rec: &str) -> &mut AtomBuilder {
+        self.record = ArrayString::from(rec).unwrap();
+        self
+    }
+    pub fn atom_name(&mut self, atm: &str) -> &mut AtomBuilder {
+        self.name = ArrayString::from(atm).unwrap();
+        self
+    }
+    pub fn residue_name(&mut self, res: &str) -> &mut AtomBuilder {
+        self.resname = ArrayString::from(res).unwrap();
+        self
+    }
+    pub fn occupancy(&mut self, occ: f64) -> &mut AtomBuilder {
+        self.occupancy = occ;
+        self
+    }
+    pub fn temperature_factor(&mut self, tfc: f64) -> &mut AtomBuilder {
+        self.tempfactor = tfc;
+        self
+    }
+    pub fn element(&mut self, elm: &str) -> &mut AtomBuilder {
+        self.element = ArrayString::from(elm).unwrap();
+        self
+    }
+    pub fn charge(&mut self, chg: &str) -> &mut AtomBuilder {
+        self.charge = ArrayString::from(chg).unwrap();
+        self
+    }
+    pub fn insertion_code(&mut self, icd: char) -> &mut AtomBuilder {
+        self.icode = icd as u8;
+        self
+    }
+    pub fn alternate_location(&mut self, alt: char) -> &mut AtomBuilder {
+        self.altloc = alt as u8;
+        self
+    }
+
+    pub fn finalize(&self) -> Atom {
+        Atom {
+            record    : self.record,
+            serial    : self.serial,
+            name      : self.name,
+            altloc    : self.altloc,
+            resname   : self.resname,
+            chainid   : self.chainid,
+            resseq    : self.resseq,
+            icode     : self.icode,
+            x         : self.x,
+            y         : self.y,
+            z         : self.z,
+            occupancy : self.occupancy,
+            tempfactor: self.tempfactor,
+            element   : self.element,
+            charge    : self.charge,
+        }
+    }
+}
+
 impl fmt::Display for Atom {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
         if self.name.len() == 1 {
@@ -123,5 +216,7 @@ impl fmt::Display for Atom {
         }
     }
 }
+
+
 
 
