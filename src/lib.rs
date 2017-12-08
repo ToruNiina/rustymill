@@ -1,8 +1,1 @@
-#[cfg(test)]
-mod tests {
-    #[test]
-    fn it_works() {
-    }
-}
-
-mod pdb;
+pub mod pdb;
