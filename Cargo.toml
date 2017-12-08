@@ -1,0 +1,6 @@
+[package]
+name = "rustymill"
+version = "0.1.0"
+authors = ["ToruNiina <niina.toru.68u@gmail.com>"]
+
+[dependencies]
