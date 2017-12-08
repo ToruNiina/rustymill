@@ -7,7 +7,7 @@ A tool for analyzing or preprocessing molecular dynamics data
 
 ## example
 
-```rs
+```rust
 extern crate rustymill as mill;
 use mill::pdb;
 
