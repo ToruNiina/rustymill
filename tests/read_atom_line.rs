@@ -1,8 +1,8 @@
-extern crate rustymill;
+extern crate rustymill as mill;
 
 #[test]
 fn read_pdb_line() {
-    let atom = PDBAtom::from("ATOM     45  N  BARG A   3      11.281  86.699  94.383  1.00 39.29           N N");
+    let atom = mill::pdb::Atom::from("ATOM     45  N  BARG A   3      11.281  86.699  94.383  1.00 39.29           N N");
     assert_eq!(atom.record_name(),        "ATOM");
     assert_eq!(atom.atom_number(),        45);
     assert_eq!(atom.atom_name(),          "N");
