@@ -1,4 +1,6 @@
 extern crate rustymill as mill;
+extern crate nalgebra  as na;
+use mill::Particle;
 
 #[test]
 fn read_pdb_line() {
@@ -133,4 +135,24 @@ fn build_pdb_atom() {
     assert_eq!(atom.temperature_factor(), 99.9);
     assert_eq!(atom.element_symbol(),     "");
     assert_eq!(atom.charge(),             "");
+}
+
+#[test]
+fn particle_trait_pdb_atom() {
+    let atom = mill::pdb::AtomBuilder::new().finalize();
+    assert_eq!(atom.name().unwrap(), "");
+    assert_eq!(atom.x(), 0.0);
+    assert_eq!(atom.y(), 0.0);
+    assert_eq!(atom.z(), 0.0);
+    assert_eq!(atom.pos(),  na::Vector3::<f64>::new(0.0, 0.0, 0.0));
+
+    let atom = mill::pdb::AtomBuilder::new()
+               .pos(1.0, 2.0, 3.0)
+               .atom_name("CA")
+               .finalize();
+    assert_eq!(atom.name().unwrap(), "CA");
+    assert_eq!(atom.x(), 1.0);
+    assert_eq!(atom.y(), 2.0);
+    assert_eq!(atom.z(), 3.0);
+    assert_eq!(atom.pos(),  na::Vector3::<f64>::new(1.0, 2.0, 3.0));
 }

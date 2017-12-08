@@ -1,8 +1,10 @@
 use arrayvec::ArrayString;
+use nalgebra::Vector3;
 use std::ascii::AsciiExt;
 use std::string::String;
 use std::str;
 use std::fmt;
+use super::Particle;
 
 // ------------------------------------ ATOM -----------------------------------
 
@@ -270,6 +272,14 @@ impl fmt::Display for Atom {
     }
 }
 
-
-
-
+impl Particle for Atom {
+    fn x(&self) -> f64 {self.x}
+    fn y(&self) -> f64 {self.y}
+    fn z(&self) -> f64 {self.z}
+    fn pos(&self) -> Vector3<f64> {
+        Vector3::<f64>::new(self.x, self.y, self.z)
+    }
+    fn name(&self) -> Option<&str> {
+        Some(self.atom_name())
+    }
+}
