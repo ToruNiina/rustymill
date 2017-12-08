@@ -245,18 +245,20 @@ impl AtomBuilder {
 
 impl fmt::Display for Atom {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-        if self.name.len() == 1 {
-            write!(f, "{:<6}{:>5}  {:<3}{}{:<3} {}{:>4}{}   {:8.3}{:8.3}{:8.3}{:6.2}{:6.2}          {:>2}{:>2}",
-                   self.record, self.serial, self.name, self.altloc as char,
-                   self.resname, self.chainid as char, self.resseq,
-                   self.icode as char, self.x, self.y, self.z,
-                   self.occupancy, self.tempfactor, self.element, self.charge)
+        let s : u8 = self.atom_name().as_bytes()[0];
+        if s == b'C' || s == b'O' || s == b'N' || s == b'H' ||
+           s == b'P' || s == b'S' {
+             write!(f, "{:<6}{:>5}  {:<3}{}{:<3} {}{:>4}{}   {:8.3}{:8.3}{:8.3}{:6.2}{:6.2}          {:>2}{:>2}",
+                 self.record, self.serial, self.name,
+                 self.altloc as char, self.resname, self.chainid as char,
+                 self.resseq, self.icode as char, self.x, self.y, self.z,
+                 self.occupancy, self.tempfactor, self.element, self.charge)
         } else {
-            write!(f, "{:<6}{:>5} {:<4}{}{:<3} {}{:>4}{}   {:8.3}{:8.3}{:8.3}{:6.2}{:6.2}          {:>2}{:>2}",
-                   self.record, self.serial, self.name, self.altloc as char,
-                   self.resname, self.chainid as char, self.resseq,
-                   self.icode as char, self.x, self.y, self.z,
-                   self.occupancy, self.tempfactor, self.element, self.charge)
+             write!(f, "{:<6}{:>5} {:<4}{}{:<3} {}{:>4}{}   {:8.3}{:8.3}{:8.3}{:6.2}{:6.2}          {:>2}{:>2}",
+                 self.record, self.serial, self.name,
+                 self.altloc as char, self.resname, self.chainid as char,
+                 self.resseq, self.icode as char, self.x, self.y, self.z,
+                 self.occupancy, self.tempfactor, self.element, self.charge)
         }
     }
 }
