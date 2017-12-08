@@ -7,3 +7,11 @@ authors = ["ToruNiina <niina.toru.68u@gmail.com>"]
 nalgebra = "0.13"
 approx   = "0.1.1"
 arrayvec = "0.4.6"
+
+[lib]
+name = "rustymill"
+path = "src/lib.rs"
+
+[[bin]]
+name = "mill"
+path = "src/bin.rs"
