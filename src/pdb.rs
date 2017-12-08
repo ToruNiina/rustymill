@@ -1,14 +1,12 @@
-pub mod pdb {
-
 extern crate approx;
 extern crate nalgebra;
 extern crate arrayvec;
 use std::ascii::AsciiExt;
-use std::string;
 use std::str;
+use std::fmt;
 
-
-struct Atom {
+#[derive(Debug)]
+pub struct Atom {
     record    : arrayvec::ArrayString<[u8;6]>,
     serial    : i32,
     name      : arrayvec::ArrayString<[u8;5]>,
@@ -25,56 +23,56 @@ struct Atom {
 }
 
 impl Atom {
-    fn record_name(&self) -> &str {
+    pub fn record_name(&self) -> &str {
         self.record.as_str()
     }
-    fn atom_number(&self) -> i32 {
+    pub fn atom_number(&self) -> i32 {
         self.serial
     }
-    fn atom_name(&self) -> &str {
+    pub fn atom_name(&self) -> &str {
         self.name.as_str()
     }
-    fn alternate_location(&self) -> u8 {
+    pub fn alternate_location(&self) -> u8 {
         self.altLoc
     }
-    fn residue_name(&self) -> &str {
+    pub fn residue_name(&self) -> &str {
         self.resName.as_str()
     }
-    fn chain_id(&self) -> u8 {
+    pub fn chain_id(&self) -> u8 {
         self.chainID
     }
-    fn residue_number(&self) -> i32 {
+    pub fn residue_number(&self) -> i32 {
         self.resSeq
     }
-    fn insertion_code(&self) -> u8 {
+    pub fn insertion_code(&self) -> u8 {
         self.iCode
     }
-    fn x(&self) -> f64 {
+    pub fn x(&self) -> f64 {
         self.position.x
     }
-    fn y(&self) -> f64 {
+    pub fn y(&self) -> f64 {
         self.position.y
     }
-    fn z(&self) -> f64 {
+    pub fn z(&self) -> f64 {
         self.position.z
     }
-    fn position(&self) -> &nalgebra::Vector3<f64> {
+    pub fn position(&self) -> &nalgebra::Vector3<f64> {
         &self.position
     }
-    fn occupancy(&self) -> f64 {
+    pub fn occupancy(&self) -> f64 {
         self.occupancy
     }
-    fn temperature_factor(&self) -> f64 {
+    pub fn temperature_factor(&self) -> f64 {
         self.tempFactor
     }
-    fn element_symbol(&self) -> &str {
+    pub fn element_symbol(&self) -> &str {
         self.element.as_str()
     }
-    fn charge(&self) -> &str {
+    pub fn charge(&self) -> &str {
         self.charge.as_str()
     }
 
-    fn new() -> Atom {
+    pub fn new() -> Atom {
         Atom{
             record    : arrayvec::ArrayString::<[u8;6]>::from("ATOM").unwrap(),
             serial    : 1,
@@ -92,7 +90,7 @@ impl Atom {
         }
     }
 
-    fn from(line: &str) -> Atom {
+    pub fn from(line: &str) -> Atom {
         assert!(line.is_ascii());
         Atom{
             record    : arrayvec::ArrayString::<[u8;6]>::from(&line[0..6].trim()).unwrap(),
@@ -103,7 +101,11 @@ impl Atom {
             chainID   : line.as_bytes()[21],
             resSeq    : (&line[22..26].trim()).parse::<i32>().unwrap(),
             iCode     : line.as_bytes()[26],
-            position  : nalgebra::Vector3::<f64>::new(0.0,0.0,0.0),
+            position  : nalgebra::Vector3::<f64>::new(
+                            (&line[30..38].trim()).parse::<f64>().unwrap(),
+                            (&line[38..46].trim()).parse::<f64>().unwrap(),
+                            (&line[46..54].trim()).parse::<f64>().unwrap()
+                        ),
             occupancy : (&line[54..60].trim()).parse::<f64>().unwrap(),
             tempFactor: (&line[60..66].trim()).parse::<f64>().unwrap(),
             element   : arrayvec::ArrayString::<[u8;2]>::from(&line[76..78].trim()).unwrap(),
@@ -111,4 +113,21 @@ impl Atom {
         }
     }
 }
+
+impl fmt::Display for Atom {
+    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+        if self.name.len() == 1 {
+            write!(f, "{:<6}{:>5}  {:<3}{}{:<3} {}{:>4}{}   {:8.3}{:8.3}{:8.3}{:6.2}{:6.2}          {:>2}{:>2}",
+                   self.record, self.serial, self.name, self.altLoc as char,
+                   self.resName, self.chainID as char, self.resSeq, self.iCode as char,
+                   self.position.x, self.position.y, self.position.z,
+                   self.occupancy, self.tempFactor, self.element, self.charge)
+        } else {
+            write!(f, "{:<6}{:>5} {:<4}{}{:<3} {}{:>4}{}   {:8.3}{:8.3}{:8.3}{:6.2}{:6.2}          {:>2}{:>2}",
+                   self.record, self.serial, self.name, self.altLoc as char,
+                   self.resName, self.chainID as char, self.resSeq, self.iCode as char,
+                   self.position.x, self.position.y, self.position.z,
+                   self.occupancy, self.tempFactor, self.element, self.charge)
+        }
+    }
 }
