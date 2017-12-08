@@ -4,3 +4,6 @@ version = "0.1.0"
 authors = ["ToruNiina <niina.toru.68u@gmail.com>"]
 
 [dependencies]
+nalgebra = "0.13"
+approx   = "0.1.1"
+arrayvec = "0.4.6"
