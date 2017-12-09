@@ -5,13 +5,13 @@ use std::string::String;
 use std::str;
 use std::fmt;
 use super::Particle;
+use super::AtomData;
 
 // ---------------------------------- HETATM -----------------------------------
 
 /// The HETATM record in PDB 3.30 format.
 #[derive(Debug)]
 pub struct Hetatm {
-    record    : ArrayString<[u8;6]>,
     serial    : i32,
     name      : ArrayString<[u8;4]>,
     altloc    : u8,
@@ -28,23 +28,24 @@ pub struct Hetatm {
     charge    : ArrayString<[u8;2]>,
 }
 
-impl Hetatm {
-    pub fn record_name(&self)        -> &str {self.record.as_str()}
-    pub fn atom_number(&self)        -> i32  {self.serial}
-    pub fn atom_name(&self)          -> &str {self.name.as_str()}
-    pub fn alternate_location(&self) -> char {self.altloc as char}
-    pub fn residue_name(&self)       -> &str {self.resname.as_str()}
-    pub fn chain_id(&self)           -> char {self.chainid as char}
-    pub fn residue_number(&self)     -> i32  {self.resseq}
-    pub fn insertion_code(&self)     -> char {self.icode as char}
-    pub fn occupancy(&self)          -> f64  {self.occupancy}
-    pub fn temperature_factor(&self) -> f64  {self.tempfactor}
-    pub fn element_symbol(&self)     -> &str {self.element.as_str()}
-    pub fn charge(&self)             -> &str {self.charge.as_str()}
+impl AtomData for Hetatm {
+    fn record_name(&self)        -> &str {"HETATM"}
+    fn atom_number(&self)        -> i32  {self.serial}
+    fn atom_name(&self)          -> &str {self.name.as_str()}
+    fn alternate_location(&self) -> char {self.altloc as char}
+    fn residue_name(&self)       -> &str {self.resname.as_str()}
+    fn chain_id(&self)           -> char {self.chainid as char}
+    fn residue_number(&self)     -> i32  {self.resseq}
+    fn insertion_code(&self)     -> char {self.icode as char}
+    fn occupancy(&self)          -> f64  {self.occupancy}
+    fn temperature_factor(&self) -> f64  {self.tempfactor}
+    fn element_symbol(&self)     -> &str {self.element.as_str()}
+    fn charge(&self)             -> &str {self.charge.as_str()}
+}
 
+impl Hetatm {
     pub fn new() -> Hetatm {
         Hetatm{
-            record    : ArrayString::<[u8;6]>::from("HETATM").unwrap(),
             serial    : 1,
             name      : ArrayString::<[u8;4]>::new(),
             altloc    : b' ',
@@ -108,7 +109,6 @@ impl Hetatm {
         };
 
         Ok(Hetatm{
-            record    : ArrayString::<[u8;6]>::from(&line[0..6].trim()).unwrap(),
             serial    : srl,
             name      : ArrayString::<[u8;4]>::from(&line[12..16].trim()).unwrap(),
             altloc    : line.as_bytes()[16],
@@ -128,7 +128,6 @@ impl Hetatm {
 }
 
 pub struct HetatmBuilder {
-    record    : ArrayString<[u8;6]>,
     serial    : i32,
     name      : ArrayString<[u8;4]>,
     altloc    : u8,
@@ -148,7 +147,6 @@ pub struct HetatmBuilder {
 impl HetatmBuilder {
     pub fn new() -> HetatmBuilder {
         HetatmBuilder{
-            record    : ArrayString::<[u8;6]>::from("HETATM").unwrap(),
             serial    : 1,
             name      : ArrayString::<[u8;4]>::new(),
             altloc    : b' ',
@@ -184,10 +182,6 @@ impl HetatmBuilder {
         self.x = px;
         self.y = py;
         self.z = pz;
-        self
-    }
-    pub fn record_name(&mut self, rec: &str) -> &mut HetatmBuilder {
-        self.record = ArrayString::from(rec).unwrap();
         self
     }
     pub fn atom_name(&mut self, atm: &str) -> &mut HetatmBuilder {
@@ -232,7 +226,6 @@ impl HetatmBuilder {
     }
     pub fn finalize(&self) -> Hetatm {
         Hetatm {
-            record    : self.record,
             serial    : self.serial,
             name      : self.name,
             altloc    : self.altloc,
@@ -256,14 +249,14 @@ impl fmt::Display for Hetatm {
         if self.element.is_empty() || self.element.len() == 1 {
             // Alignment of one-letter atom name such as C starts at column 14.
             write!(f, "{:<6}{:>5}  {:<3}{}{:<3} {}{:>4}{}   {:8.3}{:8.3}{:8.3}{:6.2}{:6.2}          {:>2}{:>2}",
-                self.record, self.serial, self.name,
+                self.record_name(), self.serial, self.name,
                 self.altloc as char, self.resname, self.chainid as char,
                 self.resseq, self.icode as char, self.x, self.y, self.z,
                 self.occupancy, self.tempfactor, self.element, self.charge)
         } else {
             // Alignment of two-letter atom name such as FE starts at column 13.
             write!(f, "{:<6}{:>5} {:<4}{}{:<3} {}{:>4}{}   {:8.3}{:8.3}{:8.3}{:6.2}{:6.2}          {:>2}{:>2}",
-                self.record, self.serial, self.name,
+                self.record_name(), self.serial, self.name,
                 self.altloc as char, self.resname, self.chainid as char,
                 self.resseq, self.icode as char, self.x, self.y, self.z,
                 self.occupancy, self.tempfactor, self.element, self.charge)

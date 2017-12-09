@@ -2,6 +2,21 @@
 use super::Particle;
 // use super::{Particle, Snapshot, Trajectory};
 
+pub trait AtomData {
+    fn record_name(&self)        -> &str;
+    fn atom_number(&self)        -> i32;
+    fn atom_name(&self)          -> &str;
+    fn alternate_location(&self) -> char;
+    fn residue_name(&self)       -> &str;
+    fn chain_id(&self)           -> char;
+    fn residue_number(&self)     -> i32;
+    fn insertion_code(&self)     -> char;
+    fn occupancy(&self)          -> f64;
+    fn temperature_factor(&self) -> f64;
+    fn element_symbol(&self)     -> &str;
+    fn charge(&self)             -> &str;
+}
+
 /// pdb::Atom
 pub mod atom;
 pub use self::atom::Atom;
@@ -11,9 +26,14 @@ pub use self::atom::AtomBuilder;
 pub mod hetatm;
 pub use self::hetatm::Hetatm;
 pub use self::hetatm::HetatmBuilder;
-//
+
+// pub mod ter;
+// pub use self::ter::Ter;
+
+// /// pdb::Residue
 // /// pdb::Chain
-// /// pdb::Ter
+// /// pdb::Model
+// /// pdb::Record
 // pub mod chain;
 // pub use self::chain::Ter;
 // pub use self::chain::Chain;
