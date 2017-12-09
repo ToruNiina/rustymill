@@ -66,6 +66,9 @@ impl Atom {
         if !line.is_ascii() {
             return Err(format!("the line is not encoded as ASCII. \n{}", line).to_owned())
         }
+        if &line[0..6] != "ATOM  " {
+            return Err(format!("the line is not ATOM line. \n{}", line).to_owned())
+        }
 
         let srl: i32 = match (&line[6..11].trim()).parse::<i32>() {
             Ok(n)    => n,
