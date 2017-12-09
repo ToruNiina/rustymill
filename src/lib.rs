@@ -10,3 +10,5 @@ pub trait Particle {
 }
 
 pub mod pdb;
+pub use pdb::atom::Atom;
+pub use pdb::atom::AtomBuilder;

@@ -4,7 +4,7 @@ use std::ascii::AsciiExt;
 use std::string::String;
 use std::str;
 use std::fmt;
-use super::Particle;
+use super::super::Particle;
 
 // ------------------------------------ ATOM -----------------------------------
 
