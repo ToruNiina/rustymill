@@ -43,6 +43,18 @@ impl AtomData for Hetatm {
     fn charge(&self)             -> &str {self.charge.as_str()}
 }
 
+impl Particle for Hetatm {
+    fn x(&self) -> f64 {self.x}
+    fn y(&self) -> f64 {self.y}
+    fn z(&self) -> f64 {self.z}
+    fn vec(&self) -> Vector3<f64> {
+        Vector3::<f64>::new(self.x, self.y, self.z)
+    }
+    fn name(&self) -> Option<&str> {
+        Some(self.atom_name())
+    }
+}
+
 impl Hetatm {
     pub fn new() -> Hetatm {
         Hetatm{
@@ -261,17 +273,5 @@ impl fmt::Display for Hetatm {
                 self.resseq, self.icode as char, self.x, self.y, self.z,
                 self.occupancy, self.tempfactor, self.element, self.charge)
         }
-    }
-}
-
-impl Particle for Hetatm {
-    fn x(&self) -> f64 {self.x}
-    fn y(&self) -> f64 {self.y}
-    fn z(&self) -> f64 {self.z}
-    fn vec(&self) -> Vector3<f64> {
-        Vector3::<f64>::new(self.x, self.y, self.z)
-    }
-    fn name(&self) -> Option<&str> {
-        Some(self.atom_name())
     }
 }

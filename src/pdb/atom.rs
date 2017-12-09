@@ -28,6 +28,33 @@ pub struct Atom {
     charge    : ArrayString<[u8;2]>,
 }
 
+impl AtomData for Atom {
+    fn record_name(&self)        -> &str {"ATOM"}
+    fn atom_number(&self)        -> i32  {self.serial}
+    fn atom_name(&self)          -> &str {self.name.as_str()}
+    fn alternate_location(&self) -> char {self.altloc as char}
+    fn residue_name(&self)       -> &str {self.resname.as_str()}
+    fn chain_id(&self)           -> char {self.chainid as char}
+    fn residue_number(&self)     -> i32  {self.resseq}
+    fn insertion_code(&self)     -> char {self.icode as char}
+    fn occupancy(&self)          -> f64  {self.occupancy}
+    fn temperature_factor(&self) -> f64  {self.tempfactor}
+    fn element_symbol(&self)     -> &str {self.element.as_str()}
+    fn charge(&self)             -> &str {self.charge.as_str()}
+}
+
+impl Particle for Atom {
+    fn x(&self) -> f64 {self.x}
+    fn y(&self) -> f64 {self.y}
+    fn z(&self) -> f64 {self.z}
+    fn vec(&self) -> Vector3<f64> {
+        Vector3::<f64>::new(self.x, self.y, self.z)
+    }
+    fn name(&self) -> Option<&str> {
+        Some(self.atom_name())
+    }
+}
+
 impl Atom {
     pub fn new() -> Atom {
         Atom{
@@ -110,21 +137,6 @@ impl Atom {
             charge    : chg,
         })
     }
-}
-
-impl AtomData for Atom {
-    fn record_name(&self)        -> &str {"ATOM"}
-    fn atom_number(&self)        -> i32  {self.serial}
-    fn atom_name(&self)          -> &str {self.name.as_str()}
-    fn alternate_location(&self) -> char {self.altloc as char}
-    fn residue_name(&self)       -> &str {self.resname.as_str()}
-    fn chain_id(&self)           -> char {self.chainid as char}
-    fn residue_number(&self)     -> i32  {self.resseq}
-    fn insertion_code(&self)     -> char {self.icode as char}
-    fn occupancy(&self)          -> f64  {self.occupancy}
-    fn temperature_factor(&self) -> f64  {self.tempfactor}
-    fn element_symbol(&self)     -> &str {self.element.as_str()}
-    fn charge(&self)             -> &str {self.charge.as_str()}
 }
 
 pub struct AtomBuilder {
@@ -261,17 +273,5 @@ impl fmt::Display for Atom {
                 self.resseq, self.icode as char, self.x, self.y, self.z,
                 self.occupancy, self.tempfactor, self.element, self.charge)
         }
-    }
-}
-
-impl Particle for Atom {
-    fn x(&self) -> f64 {self.x}
-    fn y(&self) -> f64 {self.y}
-    fn z(&self) -> f64 {self.z}
-    fn vec(&self) -> Vector3<f64> {
-        Vector3::<f64>::new(self.x, self.y, self.z)
-    }
-    fn name(&self) -> Option<&str> {
-        Some(self.atom_name())
     }
 }
