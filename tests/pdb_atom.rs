@@ -144,7 +144,7 @@ fn particle_trait_pdb_atom() {
     assert_eq!(atom.x(), 0.0);
     assert_eq!(atom.y(), 0.0);
     assert_eq!(atom.z(), 0.0);
-    assert_eq!(atom.pos(),  na::Vector3::<f64>::new(0.0, 0.0, 0.0));
+    assert_eq!(atom.vec(),  na::Vector3::<f64>::new(0.0, 0.0, 0.0));
 
     let atom = mill::pdb::AtomBuilder::new()
                .pos(1.0, 2.0, 3.0)
@@ -154,5 +154,5 @@ fn particle_trait_pdb_atom() {
     assert_eq!(atom.x(), 1.0);
     assert_eq!(atom.y(), 2.0);
     assert_eq!(atom.z(), 3.0);
-    assert_eq!(atom.pos(),  na::Vector3::<f64>::new(1.0, 2.0, 3.0));
+    assert_eq!(atom.vec(),  na::Vector3::<f64>::new(1.0, 2.0, 3.0));
 }
