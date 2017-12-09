@@ -183,7 +183,7 @@ impl AtomBuilder {
         self.resseq = rn;
         self
     }
-    pub fn chain_id(&mut self, ch: i32) -> &mut AtomBuilder {
+    pub fn chain_id(&mut self, ch: char) -> &mut AtomBuilder {
         self.chainid = ch as u8;
         self
     }

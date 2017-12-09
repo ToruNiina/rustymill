@@ -183,7 +183,7 @@ impl HetatmBuilder {
         self.resseq = rn;
         self
     }
-    pub fn chain_id(&mut self, ch: i32) -> &mut HetatmBuilder {
+    pub fn chain_id(&mut self, ch: char) -> &mut HetatmBuilder {
         self.chainid = ch as u8;
         self
     }
