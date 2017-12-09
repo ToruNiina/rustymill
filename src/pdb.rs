@@ -70,49 +70,25 @@ impl Atom {
             return Err(format!("the line is not ATOM line. \n{}", line).to_owned())
         }
 
-        let srl: i32 = match (&line[6..11].trim()).parse::<i32>() {
-            Ok(n)    => n,
-            Err(err) => return Err([format!("at line {}\n", line),
-                                    err.to_string()].concat()),
-        };
-        let resn: i32 = match (&line[22..26].trim()).parse::<i32>() {
-            Ok(n)    => n,
-            Err(err) => return Err([format!("at line {}\n", line),
-                                    err.to_string()].concat()),
-        };
-        let x_: f64 = match (&line[30..38].trim()).parse::<f64>() {
-            Ok(n)    => n,
-            Err(err) => return Err([format!("at line {}\n", line),
-                                    err.to_string()].concat()),
-        };
-        let y_: f64 = match (&line[38..46].trim()).parse::<f64>() {
-            Ok(n)    => n,
-            Err(err) => return Err([format!("at line {}\n", line),
-                                    err.to_string()].concat()),
-        };
-        let z_: f64 = match (&line[46..54].trim()).parse::<f64>() {
-            Ok(n)    => n,
-            Err(err) => return Err([format!("at line {}\n", line),
-                                    err.to_string()].concat()),
-        };
-        let occ: f64 = if line.len() >= 60{
-            match (&line[54..60].trim()).parse::<f64>() {
-                Ok(n)  => n,
-                Err(err) => return Err([format!("at line {}\n", line),
-                                        err.to_string()].concat()),
-            }
-        } else {
-            0.0
+        let srl  = try!((&line)[ 6..11].trim().parse::<i32>().map_err(
+                        |e| [e.to_string(), format!("at\n{}", line)].concat()));
+        let resn = try!((&line)[22..26].trim().parse::<i32>().map_err(
+                        |e| [e.to_string(), format!("at\n{}", line)].concat()));
+        let x_   = try!((&line)[30..38].trim().parse::<f64>().map_err(
+                        |e| [e.to_string(), format!("at\n{}", line)].concat()));
+        let y_   = try!((&line)[38..46].trim().parse::<f64>().map_err(
+                        |e| [e.to_string(), format!("at\n{}", line)].concat()));
+        let z_   = try!((&line)[46..54].trim().parse::<f64>().map_err(
+                        |e| [e.to_string(), format!("at\n{}", line)].concat()));
+
+        let occ: f64 = if line.len() < 60 {   0.0  } else {
+            try!((&line)[54..60].trim().parse::<f64>().map_err(
+                 |e| [e.to_string(), format!("at\n{}", line)].concat()))
         };
 
-        let tmp: f64 = if line.len() >= 66{
-            match (&line[60..66].trim()).parse::<f64>() {
-                Ok(n)  => n,
-                Err(err) => return Err([format!("at line {}\n", line),
-                                        err.to_string()].concat()),
-            }
-        } else {
-            999.99
+        let tmp: f64 = if line.len() < 66 { 999.99 } else {
+            try!((&line)[60..66].trim().parse::<f64>().map_err(
+                 |e| [e.to_string(), format!("at\n{}", line)].concat()))
         };
 
         let elem: ArrayString<[u8;2]> = if line.len() >= 78 {
@@ -124,6 +100,7 @@ impl Atom {
                 ArrayString::from(&line[12..14].trim()).unwrap()
             }
         };
+
         let chg: ArrayString<[u8;2]> = if line.len() >= 80 {
             ArrayString::from(&line[78..80].trim()).unwrap()
         } else {
