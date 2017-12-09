@@ -1,6 +1,7 @@
 extern crate rustymill as mill;
 extern crate nalgebra  as na;
 use mill::Particle;
+use mill::pdb::AtomData;
 
 #[test]
 fn read_pdb_hetatm() {

@@ -1,6 +1,7 @@
 extern crate rustymill as mill;
 extern crate nalgebra  as na;
 use mill::Particle;
+use mill::pdb::AtomData;
 
 #[test]
 fn read_pdb_line() {
@@ -110,7 +111,6 @@ fn build_pdb_atom() {
                .pos(1.0, 2.0, 3.0)
                .atom_number(42)
                .residue_number(69)
-               .record_name("ATOM")
                .atom_name("CA")
                .residue_name("GLY")
                .occupancy(3.14)

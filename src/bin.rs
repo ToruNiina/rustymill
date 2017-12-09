@@ -1,5 +1,6 @@
 extern crate rustymill as mill;
 use mill::pdb;
+use mill::pdb::AtomData;
 
 fn main() {
     let atom = match pdb::Atom::from(
