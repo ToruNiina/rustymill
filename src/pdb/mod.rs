@@ -7,10 +7,10 @@ pub mod atom;
 pub use self::atom::Atom;
 pub use self::atom::AtomBuilder;
 
-// /// pdb::HetAtm
-// pub mod hetatm;
-// pub use self::hetatm::HetAtm;
-// pub use self::hetatm::HetAtmBuilder;
+/// pdb::HetAtm
+pub mod hetatm;
+pub use self::hetatm::Hetatm;
+pub use self::hetatm::HetatmBuilder;
 //
 // /// pdb::Chain
 // /// pdb::Ter
