@@ -1,5 +1,6 @@
 use arrayvec::ArrayString;
 use std::ascii::AsciiExt;
+use std::fmt;
 use super::AtomData;
 
 pub struct Ter {
@@ -63,3 +64,12 @@ impl Ter {
         })
     }
 }
+
+impl fmt::Display for Ter {
+    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+        write!(f, "TER   {:>5}      {:<3} {}{:>4}{}                                                     ",
+            self.atom_number(), self.residue_name(),
+            self.chain_id(), self.residue_number(), self.insertion_code())
+    }
+}
+

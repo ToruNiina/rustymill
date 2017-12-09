@@ -27,8 +27,9 @@ pub mod hetatm;
 pub use self::hetatm::Hetatm;
 pub use self::hetatm::HetatmBuilder;
 
-// pub mod ter;
-// pub use self::ter::Ter;
+/// pdb::Ter
+pub mod ter;
+pub use self::ter::Ter;
 
 // /// pdb::Residue
 // /// pdb::Chain
