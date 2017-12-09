@@ -78,7 +78,6 @@ fn write_pdb_line() {
             "ATOM     45  N  BARG A   3      11.281  86.699  94.383  1.00 39.29           N N"
             .parse::<mill::pdb::Atom>().unwrap();
         let line = format!("{}", atom);
-        println!("{}", atom);
         assert_eq!(line, "ATOM     45  N  BARG A   3      11.281  86.699  94.383  1.00 39.29           N N");
     }
 
@@ -87,7 +86,14 @@ fn write_pdb_line() {
             "ATOM   6025  CA  ALA A   1     106.912 133.801 -29.864  1.00 92.36           C  "
             .parse::<mill::pdb::Atom>().unwrap();
         let line = format!("{}", atom);
-        println!("{}", atom);
+        assert_eq!(line, "ATOM   6025  CA  ALA A   1     106.912 133.801 -29.864  1.00 92.36           C  ");
+    }
+
+    {
+        let atom =
+            "ATOM   6025  CA  ALA A   1     106.912 133.801 -29.864  1.00 92.36           C  "
+            .parse::<mill::pdb::Atom>().unwrap();
+        let line = atom.to_string();
         assert_eq!(line, "ATOM   6025  CA  ALA A   1     106.912 133.801 -29.864  1.00 92.36           C  ");
     }
 }
