@@ -66,9 +66,6 @@ impl Atom {
         if !line.is_ascii() {
             return Err(format!("the line is not encoded as ASCII. \n{}", line).to_owned())
         }
-        if line.len() != 80 {
-            return Err(format!("the line does not have 80 characters. \n{}", line).to_owned())
-        }
 
         let srl: i32 = match (&line[6..11].trim()).parse::<i32>() {
             Ok(n)    => n,
@@ -95,17 +92,40 @@ impl Atom {
             Err(err) => return Err([format!("at line {}\n", line),
                                     err.to_string()].concat()),
         };
-        let occ: f64 = match (&line[54..60].trim()).parse::<f64>() {
-            Ok(n)    => n,
-            Err(err) => return Err([format!("at line {}\n", line),
-                                    err.to_string()].concat()),
-        };
-        let tmp: f64 = match (&line[60..66].trim()).parse::<f64>() {
-            Ok(n)    => n,
-            Err(err) => return Err([format!("at line {}\n", line),
-                                    err.to_string()].concat()),
+        let occ: f64 = if line.len() >= 60{
+            match (&line[54..60].trim()).parse::<f64>() {
+                Ok(n)  => n,
+                Err(err) => return Err([format!("at line {}\n", line),
+                                        err.to_string()].concat()),
+            }
+        } else {
+            0.0
         };
 
+        let tmp: f64 = if line.len() >= 66{
+            match (&line[60..66].trim()).parse::<f64>() {
+                Ok(n)  => n,
+                Err(err) => return Err([format!("at line {}\n", line),
+                                        err.to_string()].concat()),
+            }
+        } else {
+            999.99
+        };
+
+        let elem: ArrayString<[u8;2]> = if line.len() >= 78 {
+            ArrayString::from(&line[76..78].trim()).unwrap()
+        } else {
+            if line.as_bytes()[12] == b' ' {
+                ArrayString::from(&line[13..14].trim()).unwrap()
+            } else {
+                ArrayString::from(&line[12..14].trim()).unwrap()
+            }
+        };
+        let chg: ArrayString<[u8;2]> = if line.len() >= 80 {
+            ArrayString::from(&line[78..80].trim()).unwrap()
+        } else {
+            ArrayString::new()
+        };
 
         Ok(Atom{
             record    : ArrayString::<[u8;6]>::from(&line[0..6].trim()).unwrap(),
@@ -121,8 +141,8 @@ impl Atom {
             z         : z_,
             occupancy : occ,
             tempfactor: tmp,
-            element   : ArrayString::<[u8;2]>::from(&line[76..78].trim()).unwrap(),
-            charge    : ArrayString::<[u8;2]>::from(&line[78..80].trim()).unwrap()
+            element   : elem,
+            charge    : chg,
         })
     }
 }
