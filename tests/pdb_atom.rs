@@ -6,9 +6,8 @@ use mill::pdb::AtomData;
 #[test]
 fn read_pdb_line() {
     {
-        let atom = mill::pdb::Atom::from(
-            "ATOM     45  N  BARG A   3      11.281  86.699  94.383  1.00 39.29           N N"
-            ).unwrap();
+        let atom = "ATOM     45  N  BARG A   3      11.281  86.699  94.383  1.00 39.29           N N"
+            .parse::<mill::pdb::Atom>().unwrap();
         assert_eq!(atom.record_name(),        "ATOM");
         assert_eq!(atom.atom_number(),        45);
         assert_eq!(atom.atom_name(),          "N");
@@ -27,9 +26,10 @@ fn read_pdb_line() {
     }
 
     {
-        let atom = mill::pdb::Atom::from(
+        let atom =
             "ATOM     45  CA BARG A   3      11.281  86.699  94.383"
-            ).unwrap();
+            .parse::<mill::pdb::Atom>()
+            .unwrap();
         assert_eq!(atom.record_name(),        "ATOM");
         assert_eq!(atom.atom_number(),        45);
         assert_eq!(atom.atom_name(),          "CA");
@@ -51,19 +51,22 @@ fn read_pdb_line() {
 #[test]
 fn fail_to_read_pdb_line() {
     {
-        let atom = mill::pdb::Atom::from(
-            "ATOM     45  N  BARG A   3      ABCDEF  86.699  94.383  1.00 39.29           N N");
+        let atom =
+            "ATOM     45  N  BARG A   3      ABCDEF  86.699  94.383  1.00 39.29           N N"
+            .parse::<mill::pdb::Atom>();
         assert!(atom.is_err());
     }
 
     {
-        let atom = mill::pdb::Atom::from(
-            "ATOM     45  N  BARG A   C      11.281  86.699  94.383  1.00 39.29           N N");
+        let atom =
+            "ATOM     45  N  BARG A   C      11.281  86.699  94.383  1.00 39.29           N N"
+            .parse::<mill::pdb::Atom>();
         assert!(atom.is_err());
     }
     {
-        let atom = mill::pdb::Atom::from(
-            "ATOM    ABC  N  BARG A   3      11.281  86.699  94.383  1.00 39.29           N N");
+        let atom =
+            "ATOM    ABC  N  BARG A   3      11.281  86.699  94.383  1.00 39.29           N N"
+            .parse::<mill::pdb::Atom>();
         assert!(atom.is_err());
     }
 }
@@ -71,16 +74,18 @@ fn fail_to_read_pdb_line() {
 #[test]
 fn write_pdb_line() {
     {
-        let atom = mill::pdb::Atom::from(
-            "ATOM     45  N  BARG A   3      11.281  86.699  94.383  1.00 39.29           N N").unwrap();
+        let atom =
+            "ATOM     45  N  BARG A   3      11.281  86.699  94.383  1.00 39.29           N N"
+            .parse::<mill::pdb::Atom>().unwrap();
         let line = format!("{}", atom);
         println!("{}", atom);
         assert_eq!(line, "ATOM     45  N  BARG A   3      11.281  86.699  94.383  1.00 39.29           N N");
     }
 
     {
-        let atom = mill::pdb::Atom::from(
-            "ATOM   6025  CA  ALA A   1     106.912 133.801 -29.864  1.00 92.36           C  ").unwrap();
+        let atom =
+            "ATOM   6025  CA  ALA A   1     106.912 133.801 -29.864  1.00 92.36           C  "
+            .parse::<mill::pdb::Atom>().unwrap();
         let line = format!("{}", atom);
         println!("{}", atom);
         assert_eq!(line, "ATOM   6025  CA  ALA A   1     106.912 133.801 -29.864  1.00 92.36           C  ");

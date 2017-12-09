@@ -2,6 +2,7 @@ use arrayvec::ArrayString;
 use nalgebra::Vector3;
 use std::ascii::AsciiExt;
 use std::string::String;
+use std::str::FromStr;
 use std::str;
 use std::fmt;
 use super::Particle;
@@ -55,27 +56,9 @@ impl Particle for Atom {
     }
 }
 
-impl Atom {
-    pub fn new() -> Atom {
-        Atom{
-            serial    : 1,
-            name      : ArrayString::<[u8;4]>::new(),
-            altloc    : b' ',
-            resname   : ArrayString::<[u8;3]>::new(),
-            chainid   : b'A',
-            resseq    : 1,
-            icode     : b' ',
-            x         : 0.0,
-            y         : 0.0,
-            z         : 0.0,
-            occupancy : 0.0,
-            tempfactor: 99.9,
-            element   : ArrayString::<[u8;2]>::new(),
-            charge    : ArrayString::<[u8;2]>::new()
-        }
-    }
-
-    pub fn from(line: &str) -> Result<Atom, String> {
+impl FromStr for Atom {
+    type Err = String; // TODO!!!
+    fn from_str(line: &str) -> Result<Self, Self::Err> {
         if !line.is_ascii() {
             return Err(format!("the line is not encoded as ASCII. \n{}", line).to_owned())
         }
@@ -136,6 +119,27 @@ impl Atom {
             element   : elem,
             charge    : chg,
         })
+    }
+}
+
+impl Atom {
+    pub fn new() -> Atom {
+        Atom{
+            serial    : 1,
+            name      : ArrayString::<[u8;4]>::new(),
+            altloc    : b' ',
+            resname   : ArrayString::<[u8;3]>::new(),
+            chainid   : b'A',
+            resseq    : 1,
+            icode     : b' ',
+            x         : 0.0,
+            y         : 0.0,
+            z         : 0.0,
+            occupancy : 0.0,
+            tempfactor: 99.9,
+            element   : ArrayString::<[u8;2]>::new(),
+            charge    : ArrayString::<[u8;2]>::new()
+        }
     }
 }
 
