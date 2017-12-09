@@ -8,13 +8,12 @@ use super::Particle;
 
 // ------------------------------------ ATOM -----------------------------------
 
-/// The ATOM record in PDB format. The names of the fields are based on
-/// PDB 3.30(Nov. 21, 2012).
+/// The ATOM record in PDB 3.30 format.
 #[derive(Debug)]
 pub struct Atom {
     record    : ArrayString<[u8;6]>,
     serial    : i32,
-    name      : ArrayString<[u8;5]>,
+    name      : ArrayString<[u8;4]>,
     altloc    : u8,
     resname   : ArrayString<[u8;3]>,
     chainid   : u8,
@@ -47,7 +46,7 @@ impl Atom {
         Atom{
             record    : ArrayString::<[u8;6]>::from("ATOM").unwrap(),
             serial    : 1,
-            name      : ArrayString::<[u8;5]>::new(),
+            name      : ArrayString::<[u8;4]>::new(),
             altloc    : b' ',
             resname   : ArrayString::<[u8;3]>::new(),
             chainid   : b'A',
@@ -111,7 +110,7 @@ impl Atom {
         Ok(Atom{
             record    : ArrayString::<[u8;6]>::from(&line[0..6].trim()).unwrap(),
             serial    : srl,
-            name      : ArrayString::<[u8;5]>::from(&line[12..16].trim()).unwrap(),
+            name      : ArrayString::<[u8;4]>::from(&line[12..16].trim()).unwrap(),
             altloc    : line.as_bytes()[16],
             resname   : ArrayString::<[u8;3]>::from(&line[17..20].trim()).unwrap(),
             chainid   : line.as_bytes()[21],
@@ -131,7 +130,7 @@ impl Atom {
 pub struct AtomBuilder {
     record    : ArrayString<[u8;6]>,
     serial    : i32,
-    name      : ArrayString<[u8;5]>,
+    name      : ArrayString<[u8;4]>,
     altloc    : u8,
     resname   : ArrayString<[u8;3]>,
     chainid   : u8,
@@ -151,7 +150,7 @@ impl AtomBuilder {
         AtomBuilder{
             record    : ArrayString::<[u8;6]>::from("ATOM").unwrap(),
             serial    : 1,
-            name      : ArrayString::<[u8;5]>::new(),
+            name      : ArrayString::<[u8;4]>::new(),
             altloc    : b' ',
             resname   : ArrayString::<[u8;3]>::new(),
             chainid   : b'A',
@@ -254,20 +253,20 @@ impl AtomBuilder {
 
 impl fmt::Display for Atom {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-        let s : u8 = self.atom_name().as_bytes()[0];
-        if s == b'C' || s == b'O' || s == b'N' || s == b'H' ||
-           s == b'P' || s == b'S' {
-             write!(f, "{:<6}{:>5}  {:<3}{}{:<3} {}{:>4}{}   {:8.3}{:8.3}{:8.3}{:6.2}{:6.2}          {:>2}{:>2}",
-                 self.record, self.serial, self.name,
-                 self.altloc as char, self.resname, self.chainid as char,
-                 self.resseq, self.icode as char, self.x, self.y, self.z,
-                 self.occupancy, self.tempfactor, self.element, self.charge)
+        if self.element.is_empty() || self.element.len() == 1 {
+            // Alignment of one-letter atom name such as C starts at column 14.
+            write!(f, "{:<6}{:>5}  {:<3}{}{:<3} {}{:>4}{}   {:8.3}{:8.3}{:8.3}{:6.2}{:6.2}          {:>2}{:>2}",
+                self.record, self.serial, self.name,
+                self.altloc as char, self.resname, self.chainid as char,
+                self.resseq, self.icode as char, self.x, self.y, self.z,
+                self.occupancy, self.tempfactor, self.element, self.charge)
         } else {
-             write!(f, "{:<6}{:>5} {:<4}{}{:<3} {}{:>4}{}   {:8.3}{:8.3}{:8.3}{:6.2}{:6.2}          {:>2}{:>2}",
-                 self.record, self.serial, self.name,
-                 self.altloc as char, self.resname, self.chainid as char,
-                 self.resseq, self.icode as char, self.x, self.y, self.z,
-                 self.occupancy, self.tempfactor, self.element, self.charge)
+            // Alignment of two-letter atom name such as FE starts at column 13.
+            write!(f, "{:<6}{:>5} {:<4}{}{:<3} {}{:>4}{}   {:8.3}{:8.3}{:8.3}{:6.2}{:6.2}          {:>2}{:>2}",
+                self.record, self.serial, self.name,
+                self.altloc as char, self.resname, self.chainid as char,
+                self.resseq, self.icode as char, self.x, self.y, self.z,
+                self.occupancy, self.tempfactor, self.element, self.charge)
         }
     }
 }
