@@ -1,5 +1,7 @@
 use arrayvec::ArrayString;
 use std::ascii::AsciiExt;
+use std::string::String;
+use std::str::FromStr;
 use std::fmt;
 use super::AtomData;
 
@@ -11,25 +13,10 @@ pub struct Ter {
     icode   : u8,
 }
 
-impl Ter {
-    pub fn record_name(&self)        -> &str {"TER"}
-    pub fn atom_number(&self)        -> i32  {self.serial}
-    pub fn residue_name(&self)       -> &str {self.resname.as_str()}
-    pub fn chain_id(&self)           -> char {self.chainid as char}
-    pub fn residue_number(&self)     -> i32  {self.resseq}
-    pub fn insertion_code(&self)     -> char {self.icode as char}
+impl FromStr for Ter {
+    type Err = String; // TODO!!!
 
-    pub fn new<T: AtomData>(last : &T) -> Ter {
-        Ter {
-            serial  : last.atom_number(),
-            resname : ArrayString::from(last.residue_name()).unwrap(),
-            chainid : last.chain_id() as u8,
-            resseq  : last.residue_number(),
-            icode   : last.insertion_code() as u8,
-        }
-    }
-
-    pub fn from(line: &str) -> Result<Ter, String> {
+    fn from_str(line: &str) -> Result<Self, Self::Err> {
         if !line.is_ascii() {
             return Err(format!("the line is not encoded as ASCII. \n{}", line).to_owned())
         }
@@ -62,6 +49,26 @@ impl Ter {
             resseq  : resn,
             icode   : icd,
         })
+    }
+}
+
+
+impl Ter {
+    pub fn record_name(&self)        -> &str {"TER"}
+    pub fn atom_number(&self)        -> i32  {self.serial}
+    pub fn residue_name(&self)       -> &str {self.resname.as_str()}
+    pub fn chain_id(&self)           -> char {self.chainid as char}
+    pub fn residue_number(&self)     -> i32  {self.resseq}
+    pub fn insertion_code(&self)     -> char {self.icode as char}
+
+    pub fn new<T: AtomData>(last : &T) -> Ter {
+        Ter {
+            serial  : last.atom_number(),
+            resname : ArrayString::from(last.residue_name()).unwrap(),
+            chainid : last.chain_id() as u8,
+            resseq  : last.residue_number(),
+            icode   : last.insertion_code() as u8,
+        }
     }
 }
 

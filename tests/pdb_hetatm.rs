@@ -6,9 +6,9 @@ use mill::pdb::AtomData;
 #[test]
 fn read_pdb_hetatm() {
     {
-        let het = mill::pdb::Hetatm::from(
+        let het =
             "HETATM12345  O   HOH B 101      72.565  60.018  -6.320  1.00 21.96           O  "
-            ).unwrap();
+            .parse::<mill::pdb::Hetatm>().unwrap();
         assert_eq!(het.record_name(),        "HETATM");
         assert_eq!(het.atom_number(),        12345);
         assert_eq!(het.atom_name(),          "O");
@@ -27,9 +27,9 @@ fn read_pdb_hetatm() {
     }
 
     {
-        let het = mill::pdb::Hetatm::from(
+        let het =
             "HETATM12345  O   HOH B 101      72.565  60.018  -6.320"
-            ).unwrap();
+            .parse::<mill::pdb::Hetatm>().unwrap();
         assert_eq!(het.record_name(),         "HETATM");
         assert_eq!(het.atom_number(),         12345);
         assert_eq!(het.atom_name(),           "O");
@@ -52,9 +52,9 @@ fn read_pdb_hetatm() {
 #[test]
 fn write_pdb_hetatm() {
     {
-        let het = mill::pdb::Hetatm::from(
+        let het =
             "HETATM12345  O   HOH B 101      72.565  60.018  -6.320  1.00 21.96           O  "
-            ).unwrap();
+            .parse::<mill::pdb::Hetatm>().unwrap();
         let line = format!("{}", het);
         assert_eq!(line, "HETATM12345  O   HOH B 101      72.565  60.018  -6.320  1.00 21.96           O  ");
     }

@@ -4,9 +4,9 @@ extern crate nalgebra  as na;
 #[test]
 fn read_pdb_ter_line() {
     {
-        let ter = mill::pdb::Ter::from(
+        let ter =
             "TER   12345      ALA A   2                                                      "
-            ).unwrap();
+            .parse::<mill::pdb::Ter>().unwrap();
         assert_eq!(ter.record_name(),        "TER");
         assert_eq!(ter.atom_number(),        12345);
         assert_eq!(ter.residue_name(),       "ALA");
@@ -16,7 +16,8 @@ fn read_pdb_ter_line() {
     }
 
     {
-        let ter = mill::pdb::Ter::from("TER   12345      ALA A   2").unwrap();
+        let ter = "TER   12345      ALA A   2"
+            .parse::<mill::pdb::Ter>().unwrap();
         assert_eq!(ter.record_name(),        "TER");
         assert_eq!(ter.atom_number(),        12345);
         assert_eq!(ter.residue_name(),       "ALA");
@@ -26,7 +27,7 @@ fn read_pdb_ter_line() {
     }
 
     {
-        let ter = mill::pdb::Ter::from("TER").unwrap();
+        let ter = "TER".parse::<mill::pdb::Ter>().unwrap();
         assert_eq!(ter.record_name(),        "TER");
         assert_eq!(ter.atom_number(),        1);
         assert_eq!(ter.residue_name(),       "");
@@ -73,9 +74,9 @@ fn make_pdb_ter_line() {
 #[test]
 fn write_pdb_ter_line() {
     {
-        let ter = mill::pdb::Ter::from(
+        let ter =
             "TER   12345      ALA A   2                                                      "
-            ).unwrap();
+            .parse::<mill::pdb::Ter>().unwrap();
         let line = format!("{}", ter);
         assert_eq!(line, "TER   12345      ALA A   2                                                      ");
     }
