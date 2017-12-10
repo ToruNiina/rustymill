@@ -20,6 +20,9 @@ impl FromStr for Ter {
         if !line.is_ascii() {
             return Err(format!("the line is not encoded as ASCII. \n{}", line).to_owned())
         }
+        if line.len() < 3 {
+            return Err(format!("the line doesn't have enough size.\n{}", line).to_owned())
+        }
         if &line[0..3] != "TER" {
             return Err(format!("the line is not TER line.\n{}", line).to_owned())
         }

@@ -62,6 +62,9 @@ impl FromStr for Atom {
         if !line.is_ascii() {
             return Err(format!("the line is not encoded as ASCII. \n{}", line).to_owned())
         }
+        if line.len() < 54 {
+            return Err(format!("line doesn't have enough length. \n{}", line).to_owned())
+        }
         if &line[0..6] != "ATOM  " {
             return Err(format!("the line is not ATOM line. \n{}", line).to_owned())
         }
