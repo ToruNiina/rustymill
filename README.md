@@ -9,14 +9,15 @@ A tool for analyzing or preprocessing molecular dynamics data
 
 ```rust
 extern crate rustymill as mill;
-use mill::pdb;
+use mill::pdb::AtomData;
 
 fn main() {
-    let atom = match pdb::Atom::from(
-        "ATOM     45  N  BARG A   3      11.281  86.699  94.383  1.00 39.29           N  ") {
-        Ok(a)    => a,
-        Err(err) => panic!(err)
-    };
+    let atom_line =
+        "ATOM  12345  CA  ARG A   1      11.281  86.699  94.383  1.00999.99           N  "
+
+    let atom = atom_line.parse::<mill::pdb::Atom>().unwrap();
+    assert_eq!(atom.to_string(), atom_line);
+
     println!("{}-th atom : name = {}, residue = {}, chain = {}",
              atom.atom_number(), atom.atom_name(), atom.residue_name(),
              atom.chain_id());
