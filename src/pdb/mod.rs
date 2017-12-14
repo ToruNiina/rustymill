@@ -31,6 +31,16 @@ pub use self::hetatm::HetatmBuilder;
 pub mod ter;
 pub use self::ter::Ter;
 
+pub mod reader;
+pub use self::reader::Record;
+pub use self::reader::Reader;
+
+pub mod residue;
+pub use self::residue::Residue;
+pub use self::residue::ResidueIterator;
+// pub mod chain;
+// pub use self::chain::Chain;
+
 // /// pdb::Residue
 // /// pdb::Chain
 // /// pdb::Model
