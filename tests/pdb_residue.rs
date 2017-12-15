@@ -3,14 +3,14 @@ extern crate nalgebra  as na;
 use mill::Particle;
 use mill::pdb::Atom;
 use mill::pdb::AtomData;
-use mill::pdb::ResidueIterator;
+use mill::pdb::ResidueData;
+use mill::pdb::Residue;
 
 #[test]
 fn make_residue_iter() {
     {
-    let atoms = Vec::<Atom>::new();
-    let resi = ResidueIterator::new(&atoms);
-    assert!(resi.is_none());
+    let resi = Residue::<Atom>::new();
+    assert!(resi.atoms.is_empty());
     }
     {
     let mut atoms = Vec::<Atom>::new();
@@ -23,14 +23,23 @@ fn make_residue_iter() {
     atoms.push("ATOM     37  C   GLY A   2      13.559  86.257  95.222  0.50 37.37           C  ".parse::<mill::pdb::Atom>().unwrap());
     atoms.push("ATOM     38  O   GLY A   2      13.753  87.471  95.270  0.50 37.74           O  ".parse::<mill::pdb::Atom>().unwrap());
 
-    let resi = ResidueIterator::new(&atoms);
-    assert!(resi.is_some());
-
-    let nxt  = resi.unwrap().next();
-    assert!(nxt.is_some());
-
-    let x = nxt.unwrap();
-    assert_eq!(x.atoms[0].residue_name(), "ARG");
-
+    let res = Residue::from(atoms).unwrap();
+    assert_eq!(res.atoms.len(), 4);
+    assert_eq!(res.atoms[0].atom_name(),      "N");
+    assert_eq!(res.atoms[0].residue_name(),   "ARG");
+    assert_eq!(res.atoms[0].residue_number(), 2);
+    assert_eq!(res.atoms[0].chain_id(),       'A');
+    assert_eq!(res.atoms[1].residue_name(),   "ARG");
+    assert_eq!(res.atoms[1].residue_number(), 2);
+    assert_eq!(res.atoms[1].chain_id(),       'A');
+    assert_eq!(res.atoms[1].atom_name(),      "CA");
+    assert_eq!(res.atoms[2].residue_name(),   "ARG");
+    assert_eq!(res.atoms[2].residue_number(), 2);
+    assert_eq!(res.atoms[2].atom_name(),      "C");
+    assert_eq!(res.atoms[2].chain_id(),       'A');
+    assert_eq!(res.atoms[3].residue_name(),   "ARG");
+    assert_eq!(res.atoms[3].residue_number(), 2);
+    assert_eq!(res.atoms[3].atom_name(),      "O");
+    assert_eq!(res.atoms[3].chain_id(),       'A');
     }
 }
