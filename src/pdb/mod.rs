@@ -17,6 +17,17 @@ pub trait AtomData {
     fn charge(&self)             -> &str;
 }
 
+pub trait ResidueData {
+    fn residue_name(&self)   -> &str;
+    fn residue_number(&self) -> i32;
+    fn chain_id(&self)       -> char;
+}
+
+pub trait ChainData {
+    fn chain_id(&self)       -> char;
+}
+
+
 /// pdb::Atom
 pub mod atom;
 pub use self::atom::Atom;
@@ -37,7 +48,7 @@ pub use self::reader::Reader;
 
 pub mod residue;
 pub use self::residue::Residue;
-pub use self::residue::ResidueIterator;
+// pub use self::residue::ResidueIterator;
 // pub mod chain;
 // pub use self::chain::Chain;
 
