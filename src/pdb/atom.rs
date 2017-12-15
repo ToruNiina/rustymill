@@ -11,7 +11,7 @@ use super::AtomData;
 // ------------------------------------ ATOM -----------------------------------
 
 /// The ATOM record in PDB 3.30 format.
-#[derive(Debug)]
+#[derive(Copy, Clone, Debug)]
 pub struct Atom {
     serial    : i32,
     name      : ArrayString<[u8;4]>,
