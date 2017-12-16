@@ -48,7 +48,8 @@ pub use self::reader::Reader;
 
 pub mod residue;
 pub use self::residue::Residue;
-// pub use self::residue::ResidueIterator;
+pub use self::residue::ResidueSlice;
+pub use self::residue::ResidueIterator;
 // pub mod chain;
 // pub use self::chain::Chain;
 
